@@ -4,14 +4,11 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
 import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
-import java.nio.Buffer
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -53,29 +50,21 @@ class MainActivity : AppCompatActivity() {
                     val response = connection.responseCode
                     Log.d(TAG, "downloadXML: Response is $response")
 
-                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                    connection.inputStream.buffered().reader().use { xmlResult.append(it.readText()) }
 
-                    val inputBuffer = CharArray(500)
-                    var charsReader = 0
-                    while (charsReader <= 0) {
-                        charsReader = reader.read(inputBuffer)
-                        if (charsReader > 0) {
-                            xmlResult.append(inputBuffer, 0, charsReader)
-                        }
-                    }
-                    reader.close()
                     Log.d(TAG, "Received ${xmlResult.length} bytes")
                     return xmlResult.toString()
 
-                } catch (e: MalformedURLException) {
-                    Log.e(TAG, "downloadXML: invalid url exception: ${e.message}")
-                } catch (e: IOException) {
-                    Log.e(TAG, "downloadXML: IOException: ${e.message}")
-                } catch (e:SecurityException) {
-                    e.printStackTrace()
-                    Log.e(TAG, "downloadXML: SecurityException: ${e.message}")
                 }  catch (e: Exception) {
-                    Log.e(TAG, "downloadXML: Unknown error: ${e.message}")
+                    val errorMessage : String   = when (e) {
+                        is MalformedURLException -> "downloadXML: invalid url exception: ${e.message}"
+                        is IOException -> "downloadXML: IOException: ${e.message}"
+                        is SecurityException -> {
+                            e.printStackTrace()
+                            "downloadXML: SecurityException: ${e.message}"
+                        }
+                        else -> "downloadXML: unknown exception: ${e.message}"
+                    }
                 }
 
                 return ""
