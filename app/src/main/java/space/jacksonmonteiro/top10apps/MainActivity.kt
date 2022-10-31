@@ -1,13 +1,9 @@
 package space.jacksonmonteiro.top10apps
 
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import java.io.IOException
-import java.lang.StringBuilder
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
+import androidx.appcompat.app.AppCompatActivity
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
@@ -41,33 +37,8 @@ class MainActivity : AppCompatActivity() {
                 return rssFeed
             }
 
-            private fun downloadXML(url: String?) : String {
-                val xmlResult = StringBuilder()
-
-                try {
-                    val url = URL(url)
-                    val connection : HttpURLConnection = url.openConnection() as HttpURLConnection
-                    val response = connection.responseCode
-                    Log.d(TAG, "downloadXML: Response is $response")
-
-                    connection.inputStream.buffered().reader().use { xmlResult.append(it.readText()) }
-
-                    Log.d(TAG, "Received ${xmlResult.length} bytes")
-                    return xmlResult.toString()
-
-                }  catch (e: Exception) {
-                    val errorMessage : String   = when (e) {
-                        is MalformedURLException -> "downloadXML: invalid url exception: ${e.message}"
-                        is IOException -> "downloadXML: IOException: ${e.message}"
-                        is SecurityException -> {
-                            e.printStackTrace()
-                            "downloadXML: SecurityException: ${e.message}"
-                        }
-                        else -> "downloadXML: unknown exception: ${e.message}"
-                    }
-                }
-
-                return ""
+            private fun downloadXML(url: String?): String {
+                return URL(url).readText()
             }
         }
     }
