@@ -41,7 +41,12 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPostExecute(result: String?) {
                 super.onPostExecute(result)
-                Log.d(TAG, "OnPostExecute: parameter is $result")
+                //Log.d(TAG, "OnPostExecute: parameter is $result")
+
+                val parseApplications = ParseApplications()
+                if (result != null) {
+                    parseApplications.parse(result)
+                }
             }
 
             override fun doInBackground(vararg params: String?): String {
