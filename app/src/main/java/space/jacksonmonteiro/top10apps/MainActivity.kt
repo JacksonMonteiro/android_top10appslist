@@ -59,15 +59,11 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPostExecute(result: String?) {
                 super.onPostExecute(result)
-                //Log.d(TAG, "OnPostExecute: parameter is $result")
 
                 val parseApplications = ParseApplications()
                 if (result != null) {
                     parseApplications.parse(result)
                 }
-
-                /*val arrayAdapter = ArrayAdapter<FeedEntry>(propContext, R.layout.list_item, parseApplications.applications)
-                propListView.adapter = arrayAdapter*/
 
                 val feedAdapter = FeedAdapter(propContext, R.layout.list_record, parseApplications.applications)
                 propListView.adapter = feedAdapter
